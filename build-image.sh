@@ -1,7 +1,7 @@
 #!/bin/bash
 
-NAME=mantisbt
-VERSION=2-26.2_8.3.7
+NAME=$(cat NAME)
+VERSION=$(cat VERSION)
 
 OPTIONS=$@
 
