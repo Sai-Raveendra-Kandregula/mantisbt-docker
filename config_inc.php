@@ -12,10 +12,10 @@ $g_crypto_master_salt       = getenv('MASTER_SALT');
 
 
 # Configure email
-$g_phpMailer_method         = PHPMAILER_METHOD_MAIL; # or PHPMAILER_METHOD_SMTP, PHPMAILER_METHOD_SENDMAIL
+$g_phpMailer_method         = PHPMAILER_METHOD_SMTP; # or PHPMAILER_METHOD_MAIL, PHPMAILER_METHOD_SENDMAIL
 $g_smtp_host                = getenv('SMTP_HOST') !== false ? getenv('SMTP_HOST') : 'localhost';                       # used with PHPMAILER_METHOD_SMTP
 $g_smtp_port                = getenv('SMTP_PORT') !== false ? getenv('SMTP_PORT') : 25;
-$g_smtp_username            = getenv('SMTP_USERNAME') !== false ? getenv('SMTP_USERNAME') : '';                                   # used with PHPMAILER_METHOD_SMTP
+$g_smtp_connection_mode     = getenv('SMTP_CONNECTION_MODE') !== false ? getenv('SMTP_CONNECTION_MODE') : '';                                   # used with PHPMAILER_METHOD_SMTP
 $g_smtp_username            = getenv('SMTP_USERNAME') !== false ? getenv('SMTP_USERNAME') : '';                                   # used with PHPMAILER_METHOD_SMTP
 $g_smtp_password            = getenv('SMTP_PASSWORD') !== false ? getenv('SMTP_PASSWORD') : '';
 $g_webmaster_email          = getenv('EMAIL_WEBMASTER') !== false ? getenv('EMAIL_WEBMASTER') : null;
