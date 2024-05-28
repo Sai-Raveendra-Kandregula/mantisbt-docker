@@ -23,6 +23,7 @@ services:
     depends_on:
       - db
     restart: always
+    #network_mode: "host"
 
   db:
     image: mysql:8.4.0
@@ -35,3 +36,4 @@ services:
       - MYSQL_USER=mantis
       - MYSQL_PASSWORD=mantis
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
