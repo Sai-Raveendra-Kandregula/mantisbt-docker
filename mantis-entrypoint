@@ -6,11 +6,31 @@ set -eo pipefail
 #apache2 -DFOREGROUND
 
 if [ -z $ENABLE_ADMIN ]; then
-chmod 000 /var/www/html/admin
+    echo "Admin Access is Disabled"
+    chmod 000 /var/www/html/admin
 elif [ $ENABLE_ADMIN -eq 1 ]; then
-chmod 755 /var/www/html/admin
+    echo "Admin Access is Enabled"
+    chmod 755 /var/www/html/admin
 else
-chmod 000 /var/www/html/admin
+    echo "Admin Access is Disabled"
+    chmod 000 /var/www/html/admin
+fi
+
+if [ -z $RESTRICT_ADMIN_ACCESS ]; then
+    mv /var/www/html/admin/.htaccess /var/www/html/admin/.htaccess.disabled
+    echo "Admin Access is unrestricted. Please consider restricting."
+elif [ $RESTRICT_ADMIN_ACCESS -eq 1 ]; then
+    if [ -z $ADMIN_ACCESS_USERNAME || -z $ADMIN_ACCESS_PASSWORD ]; then
+        echo "Admin User/Password Missing, aborting..."
+        exit 1
+    fi
+
+    echo $ADMIN_ACCESS_PASSWORD | htpasswd -c -i /var/www/html/admin/.htpasswd $ADMIN_ACCESS_USERNAME
+    mv /var/www/html/admin/.htaccess.disabled /var/www/html/admin/.htaccess
+    echo "Admin Access is Restricted"
+else
+    mv /var/www/html/admin/.htaccess /var/www/html/admin/.htaccess.disabled
+    echo "Admin Access is unrestricted. Please consider restricting."
 fi
 
 /usr/sbin/apache2ctl -D BACKGROUND
