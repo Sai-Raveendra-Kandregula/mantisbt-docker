@@ -26,4 +26,5 @@ $g_return_path_email        = getenv('EMAIL_RETURN_PATH') !== false ? getenv('EM
 $g_path                     = getenv('MANTIS_URL') !== false ? getenv('MANTIS_URL') : null;
 $g_short_path               = getenv('MANTIS_URL_SHORT') !== false ? getenv('MANTIS_URL_SHORT') : null;
 
+$g_admin_checks             = getenv('ADMIN_CHECKS') !== false ? get_env('ADMIN_CHECKS') : ON;
 // include 'config_inc_addon.php';
