@@ -4,5 +4,12 @@ set -eo pipefail
 
 #apache2-foreground
 #apache2 -DFOREGROUND
+
+if [ -z $ENABLE_ADMIN ]; then
+chmod 000 /var/www/html/admin
+elif [ $ENABLE_ADMIN -eq 1 ]; then
+chmod 755 /var/www/html/admin
+fi
+
 /usr/sbin/apache2ctl -D BACKGROUND
 tail -F /var/log/apache2/access.log
