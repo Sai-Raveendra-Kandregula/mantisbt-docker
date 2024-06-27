@@ -25,5 +25,6 @@ $g_return_path_email        = getenv('EMAIL_RETURN_PATH') !== false ? getenv('EM
 # Instance Settings
 $g_path                     = getenv('MANTIS_URL') !== false ? getenv('MANTIS_URL') : null;
 $g_short_path               = getenv('MANTIS_URL_SHORT') !== false ? getenv('MANTIS_URL_SHORT') : null;
+$g_custom_headers           = getenv('MANTIS_CUSTOM_HEADERS') !== false ? getenv('MANTIS_CUSTOM_HEADERS') : null;
 
 // include 'config_inc_addon.php';
