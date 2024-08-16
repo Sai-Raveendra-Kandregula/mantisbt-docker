@@ -5,6 +5,8 @@ set -eo pipefail
 #apache2-foreground
 #apache2 -DFOREGROUND
 
+cp /mantis-supplements/.htaccess.disabled /var/www/html/admin/
+
 if [ -z $ENABLE_ADMIN ]; then
     echo "Admin Access is Disabled"
     chmod 000 /var/www/html/admin
@@ -33,5 +35,6 @@ else
     echo "Admin Access is unrestricted. Please consider restricting."
 fi
 
+/usr/sbin/a2enmod rewrite
 /usr/sbin/apache2ctl -D BACKGROUND
 tail -F /var/log/apache2/access.log
