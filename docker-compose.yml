@@ -34,6 +34,8 @@ services:
       - MYSQL_DATABASE=$MYSQL_DATABASE
       - MYSQL_USER=$MYSQL_USER
       - MYSQL_PASSWORD=$MYSQL_PASSWORD
+    volumes:
+      - ./plugins:/var/www/html/plugins
     depends_on:
       - db
     restart: always
