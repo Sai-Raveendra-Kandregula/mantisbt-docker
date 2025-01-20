@@ -10,7 +10,6 @@ $g_db_password              = getenv('MYSQL_PASSWORD') !== false ? getenv('MYSQL
 
 $g_crypto_master_salt       = getenv('MASTER_SALT');
 
-
 # Configure email
 $g_phpMailer_method         = PHPMAILER_METHOD_SMTP;                                                           # or PHPMAILER_METHOD_MAIL, PHPMAILER_METHOD_SENDMAIL
 $g_smtp_host                = getenv('SMTP_HOST') !== false ? getenv('SMTP_HOST') : 'localhost';               # used with PHPMAILER_METHOD_SMTP
@@ -28,6 +27,7 @@ $g_short_path                       = getenv('MANTIS_URL_SHORT') !== false ? get
 $g_custom_headers                   = getenv('MANTIS_CUSTOM_HEADERS') !== false ? getenv('MANTIS_CUSTOM_HEADERS') : null;
 $g_antispam_max_event_count         = getenv('MANTIS_ANTISPAM_EV_COUNT') !== false ? getenv('MANTIS_ANTISPAM_EV_COUNT') : 10;
 $g_antispam_time_window_in_seconds  = getenv('MANTIS_ANTISPAM_DURATION') !== false ? getenv('MANTIS_ANTISPAM_DURATION') : 3600;
+$g_login_method                     = getenv('MANTIS_LOGIN_METHOD') !== false ? getenv('MANTIS_LOGIN_METHOD') : 'MD5';
 
 # ldap settings
 $g_ldap_server                      = getenv('MANTIS_LDAP_SERVER') !== false ? getenv('MANTIS_LDAP_SERVER') : null;
