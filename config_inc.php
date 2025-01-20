@@ -28,7 +28,7 @@ $g_custom_headers                   = getenv('MANTIS_CUSTOM_HEADERS') !== false 
 $g_antispam_max_event_count         = getenv('MANTIS_ANTISPAM_EV_COUNT') !== false ? getenv('MANTIS_ANTISPAM_EV_COUNT') : 10;
 $g_antispam_time_window_in_seconds  = getenv('MANTIS_ANTISPAM_DURATION') !== false ? getenv('MANTIS_ANTISPAM_DURATION') : 3600;
 
-$g_login_method                       = getenv('MANTIS_LOGIN_METHOD') !== false ? constant(getenv('MANTIS_LOGIN_METHOD')) : null;
+$g_login_method                       = getenv('MANTIS_LOGIN_METHOD') !== false ? getenv('MANTIS_LOGIN_METHOD') : null;
 
 # ldap settings
 $g_ldap_server                      = getenv('MANTIS_LDAP_SERVER') !== false ? getenv('MANTIS_LDAP_SERVER') : null;
