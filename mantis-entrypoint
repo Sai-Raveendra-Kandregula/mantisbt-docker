@@ -37,4 +37,4 @@ fi
 
 /usr/sbin/a2enmod rewrite
 /usr/sbin/apache2ctl -D BACKGROUND
-tail -f /var/log/apache2/mantisbt_*
+tail -f /var/log/apache2/mantisbt_error_log
