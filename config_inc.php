@@ -29,4 +29,21 @@ $g_custom_headers                   = getenv('MANTIS_CUSTOM_HEADERS') !== false 
 $g_antispam_max_event_count         = getenv('MANTIS_ANTISPAM_EV_COUNT') !== false ? getenv('MANTIS_ANTISPAM_EV_COUNT') : 10;
 $g_antispam_time_window_in_seconds  = getenv('MANTIS_ANTISPAM_DURATION') !== false ? getenv('MANTIS_ANTISPAM_DURATION') : 3600;
 
+# ldap settings
+$g_ldap_server                      = getenv('MANTIS_LDAP_SERVER') !== false ? getenv('MANTIS_LDAP_SERVER') : null;
+$g_ldap_use_starttls                = getenv('MANTIS_LDAP_STARTTLS') !== false ? getenv('MANTIS_LDAP_STARTTLS') : ON;
+$g_ldap_tls_protocol_min            = getenv('MANTIS_LDAP_TLS_PROTOCOL_MIN') !== false ? getenv('MANTIS_LDAP_TLS_PROTOCOL_MIN') : OFF;
+$g_ldap_root_dn                     = getenv('MANTIS_LDAP_ROOTDN') !== false ? getenv('MANTIS_LDAP_ROOTDN') : null;
+$g_ldap_organization                = getenv('MANTIS_LDAP_ORGANIZATION') !== false ? getenv('MANTIS_LDAP_ORGANIZATION') : '';
+$g_ldap_protocol_version            = getenv('MANTIS_LDAP_PROTOCOL_VERSION') !== false ? getenv('MANTIS_LDAP_PROTOCOL_VERSION') : 3;
+$g_ldap_network_timeout             = getenv('MANTIS_LDAP_NETWORK_TIMEOUT') !== false ? getenv('MANTIS_LDAP_NETWORK_TIMEOUT') : 0;
+$g_ldap_follow_referrals            = getenv('MANTIS_LDAP_FOLLOW_REFERRALS') !== false ? getenv('MANTIS_LDAP_FOLLOW_REFERRALS') : ON;
+$g_ldap_bind_dn                     = getenv('MANTIS_LDAP_BIND_DN') !== false ? getenv('MANTIS_LDAP_BIND_DN') : null;
+$g_ldap_bind_passwd                 = getenv('MANTIS_LDAP_BIND_PASSWD') !== false ? getenv('MANTIS_LDAP_BIND_PASSWD') : null;
+$g_ldap_uid_field                   = getenv('MANTIS_LDAP_UID_FIELD') !== false ? getenv('MANTIS_LDAP_UID_FIELD') : 'uid';
+$g_ldap_email_field                 = getenv('MANTIS_LDAP_EMAIL_FIELD') !== false ? getenv('MANTIS_LDAP_EMAIL_FIELD') : 'mail';
+$g_ldap_realname_field              = getenv('MANTIS_LDAP_REALNAME_FIELD') !== false ? getenv('MANTIS_LDAP_REALNAME_FIELD') : 'cn';
+$g_use_ldap_realname                = getenv('MANTIS_LDAP_USE_REALNAME') !== false ? getenv('MANTIS_LDAP_USE_REALNAME') : OFF;
+$g_use_ldap_email                   = getenv('MANTIS_LDAP_USE_EMAIL') !== false ? getenv('MANTIS_LDAP_USE_EMAIL') : OFF;
+
 // include 'config_inc_addon.php';
