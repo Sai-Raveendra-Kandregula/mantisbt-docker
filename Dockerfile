@@ -4,9 +4,12 @@ FROM debian:bookworm
 RUN apt update
 
 RUN apt install apache2 php-mysql php-date php-json php-mbstring php-curl php-gd php-fileinfo php-ldap php-cli php-intl php-xml php-zip php-bcmath php-pear libpcre3 libpcre3-dev zip --yes
-RUN apt install libapache2-mod-php nano --yes
+RUN apt install libapache2-mod-php nano patch --yes
 # Copy Mantis BT into Docker image
+COPY ./patches /patches
 COPY ./mantisbt-2.26.2 /mantisbt-2.26.2
+COPY ./apply_patches.sh /apply_patches.sh
+RUN ./apply_patches.sh
 RUN cp -r /mantisbt-2.26.2/* /var/www/html
 RUN rm -rf /mantisbt-2.26.2
 

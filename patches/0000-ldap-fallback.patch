@@ -1,0 +1,15 @@
+diff --git a/mantisbt-2.26.2/core/authentication_api.php b/mantisbt-2.26.2/core/authentication_api.php
+index d7e5c7d..b06a4ff 100644
+--- a/mantisbt-2.26.2/core/authentication_api.php
++++ b/mantisbt-2.26.2/core/authentication_api.php
+@@ -761,7 +761,9 @@ function auth_does_password_match( $p_user_id, $p_test_password ) {
+ 	$t_configured_login_method = config_get_global( 'login_method' );
+ 
+ 	if( LDAP == $t_configured_login_method ) {
+-		return ldap_authenticate( $p_user_id, $p_test_password );
++		if( ldap_authenticate( $p_user_id, $p_test_password ) ) {
++			return true;
++		}
+ 	}
+ 
+ 	if( !auth_can_use_standard_login( $p_user_id ) ) {
