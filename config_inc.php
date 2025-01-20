@@ -46,6 +46,5 @@ $g_ldap_realname_field              = getenv('MANTIS_LDAP_REALNAME_FIELD') !== f
 $g_use_ldap_realname                = getenv('MANTIS_LDAP_USE_REALNAME') !== false ? getenv('MANTIS_LDAP_USE_REALNAME') : OFF;
 $g_use_ldap_email                   = getenv('MANTIS_LDAP_USE_EMAIL') !== false ? getenv('MANTIS_LDAP_USE_EMAIL') : OFF;
 
-$g_log_level = LOG_LDAP;
-$g_log_destination = 'file:/var/log/mantis.log';
+$g_log_level                        = getenv('MANTIS_LOG_LEVEL') !== false ? getenv('MANTIS_LOG_LEVEL') : LOG_LDAP;
 // include 'config_inc_addon.php';
