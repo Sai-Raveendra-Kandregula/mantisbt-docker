@@ -22,7 +22,12 @@ if [ -z $RESTRICT_ADMIN_ACCESS ]; then
     mv /var/www/html/admin/.htaccess /var/www/html/admin/.htaccess.disabled
     echo "Admin Access is unrestricted. Please consider restricting."
 elif [ $RESTRICT_ADMIN_ACCESS -eq 1 ]; then
-    if [ -z $ADMIN_ACCESS_USERNAME || -z $ADMIN_ACCESS_PASSWORD ]; then
+    if [ -z $ADMIN_ACCESS_USERNAME ]; then
+        echo "Admin User/Password Missing, aborting..."
+        exit 1
+    fi
+
+    if [ -z $ADMIN_ACCESS_PASSWORD ]; then
         echo "Admin User/Password Missing, aborting..."
         exit 1
     fi
