@@ -35,7 +35,7 @@ $g_ldap_use_starttls                = getenv('MANTIS_LDAP_STARTTLS') !== false ?
 $g_ldap_tls_protocol_min            = getenv('MANTIS_LDAP_TLS_PROTOCOL_MIN') !== false ? getenv('MANTIS_LDAP_TLS_PROTOCOL_MIN') : null;
 $g_ldap_root_dn                     = getenv('MANTIS_LDAP_ROOTDN') !== false ? getenv('MANTIS_LDAP_ROOTDN') : null;
 $g_ldap_organization                = getenv('MANTIS_LDAP_ORGANIZATION') !== false ? getenv('MANTIS_LDAP_ORGANIZATION') : null;
-$g_ldap_protocol_version            = getenv('MANTIS_LDAP_PROTOCOL_VERSION') !== false ? getenv('MANTIS_LDAP_PROTOCOL_VERSION') : null;
+$g_ldap_protocol_version            = getenv('MANTIS_LDAP_PROTOCOL_VERSION') !== false ? getenv('MANTIS_LDAP_PROTOCOL_VERSION') : 3;
 $g_ldap_network_timeout             = getenv('MANTIS_LDAP_NETWORK_TIMEOUT') !== false ? getenv('MANTIS_LDAP_NETWORK_TIMEOUT') : null;
 $g_ldap_follow_referrals            = getenv('MANTIS_LDAP_FOLLOW_REFERRALS') !== false ? getenv('MANTIS_LDAP_FOLLOW_REFERRALS') : null;
 $g_ldap_bind_dn                     = getenv('MANTIS_LDAP_BIND_DN') !== false ? getenv('MANTIS_LDAP_BIND_DN') : null;
