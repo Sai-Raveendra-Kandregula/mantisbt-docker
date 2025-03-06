@@ -393,7 +393,7 @@ foreach( $t_related_custom_field_ids as $t_custom_field_id ) {
 ?>
 <tr>
 	<td class="bold">
-		<?php echo string_display_line( sprintf( lang_get( 'label' ), lang_get_defaulted( $t_def['name'] ) ) ) ?>
+		<?php echo string_attribute( sprintf( lang_get( 'label' ), lang_get_defaulted( $t_def['name'] ) ) ) ?>
 	</td>
 	<td colspan="5">
 		<?php print_custom_field_value( $t_def, $t_custom_field_id, $t_id ); ?>
@@ -578,6 +578,8 @@ $t_bugnotes = bugnote_get_all_visible_bugnotes( $t_id, $t_user_bugnote_order, $t
 	} # end in_array
 }  # end main loop
 
-layout_body_javascript();
+if( $f_type_page == 'html' ) {
+	layout_body_javascript();
+}
 html_body_end();
 html_end();

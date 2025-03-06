@@ -238,7 +238,7 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function summary_menu() {
 		$t_menu_items[] = '<a href="'
-			. $this->get_url_with_filter( 'developer_graph.php' )
+			. $this->get_url_with_filter( 'project_graph.php' )
 			. '">'
 			. plugin_lang_get( 'tab_label' )
 			. '</a>';
@@ -250,6 +250,11 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function print_submenu() {
 		$t_menu_items = array(
+			'project_graph.php' => array(
+				'icon' => 'fa-bar-chart',
+				'label' => lang_get( 'by_project' ),
+				'url' => $this->get_url_with_filter( 'project_graph.php' ),
+			),
 			'developer_graph.php' => array(
 				'icon' => 'fa-bar-chart',
 				'label' => lang_get( 'by_developer' ),

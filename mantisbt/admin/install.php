@@ -37,7 +37,7 @@ error_reporting( E_ALL );
 # and plugins will not be loaded.
 const MANTIS_MAINTENANCE_MODE = true;
 
-require_once( dirname( __FILE__, 2 ) . '/core.php' );
+require_once( dirname( __DIR__ ) . '/core.php' );
 require_api( 'install_helper_functions_api.php' );
 require_api( 'crypto_api.php' );
 $g_error_send_page_header = false; # bypass page headers in error handler
@@ -348,7 +348,7 @@ print_test( 'Checking if safe mode is enabled for install script',
 	);
 
 	foreach( $t_config_files as $t_file => $t_action ) {
-		$t_dir = dirname( __FILE__, 2 ) . '/';
+		$t_dir = dirname( __DIR__ ) . '/';
 		if( substr( $t_file, 0, 3 ) == 'mc_' ) {
 			$t_dir .= 'api/soap/';
 		}
@@ -479,12 +479,12 @@ if( 2 == $t_install_state ) {
 	</td>
 	<?php
 		$t_url_check = '';
+		$t_hard_fail = false;
 		if( !$f_path ) {
 			# Empty URL - warn admin about security risk
 			$t_url_check = "Using an empty path is a security risk, as MantisBT "
 				. "will dynamically set it based on headers from the HTTP request, "
 				. "exposing your system to Host Header Injection attacks.";
-			$t_hard_fail = false;
 		} else {
 			# Make sure we have a trailing '/'
 			$f_path = rtrim( $f_path, '/' ) . '/';
@@ -492,6 +492,7 @@ if( 2 == $t_install_state ) {
 			# Check that the URL is valid
 			if( !filter_var( $f_path, FILTER_VALIDATE_URL ) ) {
 				$t_url_check = "'$f_path' is not a valid URL.";
+				$t_hard_fail = true;
 			} else {
 				require_api( 'url_api.php' );
 				$t_page_contents = url_get( $f_path );
@@ -500,8 +501,10 @@ if( 2 == $t_install_state ) {
 				} elseif( false === strpos( $t_page_contents, 'MantisBT') ) {
 					$t_url_check = "Web page at '$f_path' does not appear to be a MantisBT site.";
 				}
+				if( $t_url_check ) {
+					$t_url_check .= "<br>The system will not function properly if this URL is not accessible.";
+				}
 			}
-			$t_hard_fail = true;
 		}
 
 		print_test_result( $t_url_check ? BAD : GOOD, $t_hard_fail, $t_url_check );
@@ -970,7 +973,7 @@ if( 3 == $t_install_state ) {
 		config_set_global( 'db_table_plugin_prefix', $f_db_table_plugin_prefix );
 		config_set_global( 'db_table_suffix', $f_db_table_suffix );
 		# database_api references this
-		require_once( dirname( __FILE__ ) . '/schema.php' );
+		require_once( __DIR__ . '/schema.php' );
 		$g_db = ADONewConnection( $f_db_type );
 		$t_result = @$g_db->Connect( $f_hostname, $f_admin_username, $f_admin_password, $f_database_name );
 		if( !$f_log_queries ) {
@@ -1001,7 +1004,12 @@ if( 3 == $t_install_state ) {
 
 		# Make sure we do the upgrades using UTF-8 if needed
 		if( $f_db_type === 'mysqli' ) {
-			$g_db->execute( 'SET NAMES UTF8' );
+			$sql = 'SET NAMES UTF8';
+			if( $f_log_queries ) {
+				echo $sql . ';' . PHP_EOL . PHP_EOL;
+			} else {
+				$g_db->execute( $sql );
+			}
 		}
 
 		/** @var ADODB_DataDict $t_dict */

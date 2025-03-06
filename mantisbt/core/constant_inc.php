@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.26.2' );
+define( 'MANTIS_VERSION', '2.27.1' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -35,7 +35,7 @@ define( 'GOOD', 1 );
 define( 'WARN', 2 );
 
 # PHP-related constants
-define( 'PHP_MIN_VERSION', '7.2.5' );
+define( 'PHP_MIN_VERSION', '7.4.0' );
 define( 'PHP_CLI', 0 );
 define( 'PHP_CGI', 1 );
 
@@ -128,6 +128,10 @@ define( 'ETA_TWO_TO_THREE_DAYS', 30 );
 define( 'ETA_UNDER_ONE_WEEK', 40 );
 define( 'ETA_UNDER_ONE_MONTH', 50 );
 define( 'ETA_OVER_ONE_MONTH', 60 );
+
+# Category status
+define( 'CATEGORY_STATUS_DISABLED', 0 );
+define( 'CATEGORY_STATUS_ENABLED', 1 );
 
 # project view_state
 define( 'VS_PUBLIC', 10 );
@@ -240,6 +244,7 @@ define( 'PLUGIN_PRIORITY_HIGH', 5 );
 # error messages
 define( 'ERROR_PHP', -1 );
 define( 'ERROR_GENERIC', 0 );
+define( 'ERROR_GENERIC_DETAILS', 32 );
 define( 'ERROR_SQL', 1 );
 define( 'ERROR_REPORT', 3 );
 define( 'ERROR_NO_FILE_SPECIFIED', 4 );
@@ -368,7 +373,7 @@ define( 'ERROR_CATEGORY_DUPLICATE', 1500 );
 define( 'ERROR_NO_COPY_ACTION', 1501 );
 define( 'ERROR_CATEGORY_NOT_FOUND', 1502 );
 define( 'ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT', 1503 );
-define( 'ERROR_CATEGORY_CANNOT_DELETE_DEFAULT', 1504 );
+define( 'ERROR_CATEGORY_CANNOT_UPDATE_DEFAULT', 1504 );
 define( 'ERROR_CATEGORY_CANNOT_DELETE_HAS_ISSUES', 1505 );
 
 # ERROR_VERSION_*
@@ -443,6 +448,9 @@ define( 'ERROR_CRYPTO_MASTER_SALT_INVALID', 2900 );
 
 # ERROR_API_TOKEN_*
 define( 'ERROR_API_TOKEN_NAME_NOT_UNIQUE', 3000 );
+
+# ERROR_GRAPH_*
+define( 'ERROR_GRAPH_TOOL_NOT_FOUND', 3100 );
 
 # Generic position constants
 define( 'POSITION_NONE', 0 );
@@ -589,10 +597,6 @@ define( 'EVENT_TYPE_EXECUTE', 1 );
 define( 'EVENT_TYPE_OUTPUT', 2 );
 define( 'EVENT_TYPE_CHAIN', 3 );
 define( 'EVENT_TYPE_FIRST', 4 );
-
-# Timeline types
-define( 'TIMELINE_TARGETTED', 1 );
-define( 'TIMELINE_FIXED', 2 );
 
 # PHPMailer Methods
 define( 'PHPMAILER_METHOD_MAIL', 0 );

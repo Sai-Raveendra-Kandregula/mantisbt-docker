@@ -238,6 +238,15 @@ function string_url( $p_string ) {
 }
 
 /**
+ * Build a URL-encoded query string from an array of key value pairs.
+ * @param  array $p_params Query string parameters.
+ * @return string
+ */
+function string_build_query( array $p_params ): string {
+	return http_build_query( $p_params, '', '&', PHP_QUERY_RFC3986 );
+}
+
+/**
  * validate the url as part of this site before continuing
  * @param string  $p_url             URL to be processed.
  * @param boolean $p_return_absolute Whether to return the absolute URL to this Mantis instance.
@@ -286,7 +295,7 @@ function string_sanitize_url( $p_url, $p_return_absolute = false ) {
 		foreach( $t_pairs as $t_key => $t_value ) {
 			if( is_array( $t_value ) ) {
 				foreach( $t_value as $t_value_each ) {
-					$t_clean_pairs[] .= rawurlencode( $t_key ) . '[]=' . rawurlencode( $t_value_each );
+					$t_clean_pairs[] = rawurlencode( $t_key ) . '[]=' . rawurlencode( $t_value_each );
 				}
 			} else {
 				$t_clean_pairs[] = rawurlencode( $t_key ) . '=' . rawurlencode( $t_value );
@@ -707,7 +716,7 @@ function string_get_bugnote_view_link( $p_bug_id, $p_bugnote_id, $p_detail_info 
 
 		$t_link .= '>' . bug_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id ) . '</a>';
 	} else {
-		$t_link = bugnote_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id );
+		$t_link = bug_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id );
 	}
 
 	return $t_link;

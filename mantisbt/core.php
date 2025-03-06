@@ -66,7 +66,7 @@ if( file_exists( 'mantis_offline.php' ) && !isset( $_GET['mbadmin'] ) ) {
 $g_request_time = microtime( true );
 
 # Load supplied constants
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constant_inc.php' );
+require_once( __DIR__ . '/core/constant_inc.php' );
 
 # Enforce our minimum PHP requirements
 if( version_compare( PHP_VERSION, PHP_MIN_VERSION, '<' ) ) {
@@ -86,10 +86,10 @@ if( php_sapi_name() != 'cli' ) {
 }
 
 # Load Composer autoloader
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor/autoload.php' );
+require_once( __DIR__ . '/vendor/autoload.php' );
 
 # Include default configuration settings
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'config_defaults_inc.php' );
+require_once( __DIR__ . '/config_defaults_inc.php' );
 
 # Load user-defined constants (if required)
 global $g_config_path;
@@ -189,6 +189,12 @@ if( !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
 # Register global shutdown function
 shutdown_functions_register();
 
+# Push default language to speed calls to lang_get
+if( !defined( 'LANG_LOAD_DISABLED' ) ) {
+	require_api( 'lang_api.php' );
+	lang_push( lang_get_default() );
+}
+
 # Initialise plugins
 require_api( 'plugin_api.php' );  # necessary for some upgrade steps
 if( !defined( 'PLUGINS_DISABLED' ) && !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
@@ -234,12 +240,6 @@ if( file_exists( $g_config_path . 'custom_functions_inc.php' ) ) {
 require_api( 'http_api.php' );
 event_signal( 'EVENT_CORE_HEADERS' );
 http_all_headers();
-
-# Push default language to speed calls to lang_get
-if( !defined( 'LANG_LOAD_DISABLED' ) ) {
-	require_api( 'lang_api.php' );
-	lang_push( lang_get_default() );
-}
 
 # Signal plugins that the core system is loaded
 if( !defined( 'PLUGINS_DISABLED' ) && !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
@@ -437,7 +437,7 @@ function autoload_mantis( $p_class ) {
 		return;
 	}
 
-	$t_require_path = $g_library_path . 'rssbuilder' . DIRECTORY_SEPARATOR . 'class.' . $p_class . '.inc.php';
+	$t_require_path = $g_library_path . 'rssbuilder/class.' . $p_class . '.inc.php';
 
 	if( file_exists( $t_require_path ) ) {
 		require_once( $t_require_path );

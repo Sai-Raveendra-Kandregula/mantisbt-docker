@@ -119,7 +119,8 @@ function html_rss_link() {
 	global $g_rss_feed_url;
 
 	if( $g_rss_feed_url !== null ) {
-		echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="' . string_attribute( $g_rss_feed_url ) . '" />' . "\n";
+		echo "\t", '<link rel="alternate" type="application/rss+xml" title="RSS" href="',
+			string_attribute( $g_rss_feed_url ), '">', "\n";
 	}
 }
 
@@ -129,7 +130,7 @@ function html_rss_link() {
  * @return void
  */
 function html_javascript_link( $p_filename ) {
-	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'js/' . $p_filename ), '"></script>', "\n";
+	echo "\t", '<script src="', helper_mantis_url( 'js/' . $p_filename ), '"></script>', "\n";
 }
 
 /**
@@ -143,7 +144,7 @@ function html_javascript_cdn_link( $p_url, $p_hash = '' ) {
 	if( $p_hash !== '' ) {
 		$t_integrity = 'integrity="' . $p_hash . '" ';
 	}
-	echo "\t", '<script type="text/javascript" src="', $p_url, '" ', $t_integrity, 'crossorigin="anonymous"></script>', "\n";
+	echo "\t", '<script src="', $p_url, '" ', $t_integrity, 'crossorigin="anonymous"></script>', "\n";
 }
 
 /**
@@ -152,7 +153,7 @@ function html_javascript_cdn_link( $p_url, $p_hash = '' ) {
  */
 function html_begin() {
 	echo '<!DOCTYPE html>', "\n";
-	echo '<html>', "\n";
+	echo '<html lang="', lang_get_current_lang(), '">', "\n";
 }
 
 /**
@@ -168,7 +169,7 @@ function html_head_begin() {
  * @return void
  */
 function html_content_type() {
-	echo "\t", '<meta http-equiv="Content-type" content="text/html; charset=utf-8" />', "\n";
+	echo "\t", '<meta charset="utf-8">', "\n";
 }
 
 /**
@@ -351,8 +352,8 @@ function html_head_javascript() {
 		helper_mantis_url( 'javascript_config.php' ),
 		'cache_key=' . helper_generate_cache_key( array( 'user' ) )
 	);
-	echo "\t" . '<script type="text/javascript" src="' . $t_javascript_config . '"></script>' . "\n";
-	echo "\t" . '<script type="text/javascript" src="' . $t_javascript_translations . '"></script>' . "\n";
+	echo "\t" . '<script src="' . $t_javascript_config . '"></script>' . "\n";
+	echo "\t" . '<script src="' . $t_javascript_translations . '"></script>' . "\n";
 
 	if ( config_get_global( 'cdn_enabled' ) == ON ) {
 		# JQuery
@@ -545,10 +546,6 @@ function html_body_end() {
  */
 function html_end() {
 	echo '</html>', "\n";
-
-	if( function_exists( 'fastcgi_finish_request' ) ) {
-		fastcgi_finish_request();
-	}
 }
 
 /**
@@ -621,25 +618,38 @@ function print_subproject_menu_bar( $p_current_project_id, $p_parent_project_id,
 /**
  * Print a generic menu (tabs).
  *
- * @param array  $p_menu_items   List of menu items
- * @param string $p_current_page Current page's file name to highlight active tab
- * @param string $p_event        Optional event to signal,
+ * A menu item is an associative array with the following structure:
+ *  - 'url' (string): MantisBT page name or URL the menu item points to
+ *  - 'label' (string): Language string or Text to display on the menu item
+ *  - 'absolute' (bool): optional, set to true if the URL is absolute; if false
+ *    or unspecified, it will be processed by {@see helper_mantis_url()}.
+ *
+ * Plugins hooking $p_event are expected to provide a list of cooked HTML links
+ * instead (i.e. `<a href="url">label</a>`).
+ *
+ * @param array  $p_menu_items   List of menu items.
+ * @param string $p_current_page Current page's file name to highlight active tab.
+ * @param string $p_event        Optional event to signal.
  */
 function print_menu( array $p_menu_items, $p_current_page = '', $p_event = null ) {
 	echo '<ul class="nav nav-tabs padding-18">' . "\n";
 
 	foreach( $p_menu_items as $t_item ) {
-		$t_active = $p_current_page && strpos( $t_item['url'], $p_current_page ) !== false ? 'active' : '';
+		$t_url = $t_item['url'];
+		$t_active = $p_current_page && strpos( $t_url, $p_current_page ) !== false ? 'active' : '';
 
-		echo '<li class="' . $t_active .  '">';
-		if( $t_item['label'] == '' ) {
-			echo '<a href="'. lang_get_defaulted( $t_item['url'] ) .'">';
-			print_icon( 'fa-info-circle', 'blue ace-icon' );
-			echo '</a>';
-		} else {
-			echo '<a href="'. helper_mantis_url( $t_item['url'] ) .'">' . lang_get_defaulted( $t_item['label'] ) . '</a>';
+		# Generate relative URL if caller didn't specify it as absolute
+		if( !($t_item['absolute'] ?? false) ) {
+			$t_url = helper_mantis_url( $t_url );
 		}
-		echo '</li>' . "\n";
+
+		echo '<li class="' . $t_active .  '"><a href="'. $t_url .'">';
+		if( $t_item['label'] == '' ) {
+			print_icon( 'fa-info-circle', 'blue ace-icon' );
+		} else {
+			echo lang_get_defaulted( $t_item['label'] );
+		}
+		echo '</a></li>' . "\n";
 	}
 
 	# Plugins menu items - these are html hyperlinks (<a> tags)
@@ -877,20 +887,23 @@ function print_account_menu( $p_page = '' ) {
 function print_doc_menu( $p_page = '' ) {
 	# User Documentation
 	$t_doc_url = config_get_global( 'manual_url' );
+	$t_absolute = true;
 	if( is_null( parse_url( $t_doc_url, PHP_URL_SCHEME ) ) ) {
 		# URL has no scheme, so it is relative to MantisBT root
 		if( is_blank( $t_doc_url ) ||
 			!file_exists( config_get_global( 'absolute_path' ) . $t_doc_url )
 		) {
 			# Local documentation not available, use online docs
-			$t_doc_url = 'http://www.mantisbt.org/documentation.php';
+			$t_doc_url = 'https://mantisbt.org/documentation.php';
 		} else {
 			$t_doc_url = helper_mantis_url( $t_doc_url );
+			$t_absolute = false;
 		}
 	}
 
 	$t_pages[$t_doc_url] = array(
 		'url'   => $t_doc_url,
+		'absolute' => $t_absolute,
 		'label' => 'user_documentation'
 	);
 
@@ -1233,6 +1246,14 @@ class TableGridLayout {
 					echo '</tr>';
 			}
 		}
+	}
+
+	/**
+	 * Prints HTML code for a spacer row
+	 * @param string $p_class Class of the row ('spacer' by default)
+	 */
+	public function render_spacer( $p_class = 'spacer' ) {
+		echo '<tr class="', $p_class, '"><td colspan="', $this->cols, '"></td></tr>';
 	}
 
 	/**

@@ -48,6 +48,7 @@
  * @author GuoPC
  * @author Hydra
  * @author Hzy980512
+ * @author Key0121
  * @author Lakejason0
  * @author Liangent
  * @author Linforest
@@ -115,6 +116,7 @@ $s_unassigned_projects_label = '未分配项目';
 $s_copy_users = '复制用户';
 $s_copy_categories_from = '从该项目复制分类';
 $s_copy_categories_to = '复制分类到该项目';
+$s_copy_categories_exclude_inherited = '排除继承类别';
 $s_copy_versions_from = '从该项目复制版本号';
 $s_copy_versions_to = '复制版本号到该项目';
 $s_copy_users_from = '从该项目复制用户';
@@ -144,6 +146,7 @@ $s_inherit = '继承分类';
 $s_inherit_global = '继承全域分类';
 $s_inherit_parent = '继承父分类';
 $s_update_subproject_inheritance = '更新子项目继承';
+$s_category_disabled = '类别已停用，请选择其他类别';
 $s_duplicate_of = '与此重复';
 $s_has_duplicate = '有重复';
 $s_related_to = '相关问题：';
@@ -510,12 +513,10 @@ $s_log_page_time = '执行时间';
 $s_log_page_caller = '调用程序';
 $s_log_page_event = '活动';
 $s_please_report = '请报告至 %1$s。';
-$s_warning_plain_password_authentication = '<strong>警告：</strong>身份验证使用了明文方式，您的密码对于管理员是可见的。';
 $s_warning_default_administrator_account_present = '<strong>警告：</strong>应该禁止默认 \'administrator\' 帐号或修改其密码。';
 $s_warning_admin_directory_present = '<strong>警告：</strong>“admin”目录应被移除，或已限制其访问权。';
 $s_warning_change_setting = '<strong>警告：</strong>“%1$s”未设定为默认值（%2$s）。';
 $s_warning_security_hazard = '这是一个潜在安全问题，因为它将暴露敏感信息。';
-$s_warning_integrity_hazard = '这将导致MantisBT在错误发生时继续运行并可能间接导致系统/数据完整性问题。';
 $s_warning_debug_email = '<strong>警告：</strong>“<code>debug_email</code>”未设定为<code>OFF</code>，所有通知邮件将发送至“%1$s”。';
 $s_error_database_no_schema_version = '<strong>错误：</strong>您的数据库结构版本为0。发生的原因可能是因为数据库被破坏，或是不能从配置表中检索“database_version”的值，又或者数据库结构来自过时的MantisBT版本（指在1.0.0之前的版本）。';
 $s_error_database_version_out_of_date_2 = '<strong>警告：</strong>数据库结构也许已经过时。请再登录前升级<a href="admin/install.php">这里</a>。';
@@ -554,6 +555,7 @@ $s_create_new_account_title = '创建新账户';
 $s_verify_password = '确认密码';
 $s_enabled = '已启用';
 $s_enabled_label = '已启用';
+$s_disabled = '已停用';
 $s_protected = '已保护';
 $s_protected_label = '已保护';
 $s_create_user_button = '创建用户';
@@ -649,6 +651,7 @@ $s_readonly_status = '只读问题的状态设置为';
 $s_reopen_status = '重新打开的问题状态设置为';
 $s_reopen_resolution = '重新打开的问题的处理状况设置为';
 $s_limit_view_unless_threshold_option = '查看其他用户的问题 (如果没有设置，将仅限显示用户报告、处理或监控的问题)';
+$s_export_issues = '导出问题';
 $s_config_delete_sure = '您确实要删除项目 %2$s 中的 %1$s 设置吗？';
 $s_delete_config_button = '删除设置';
 $s_configuration_report = '配置报告';
@@ -1242,6 +1245,7 @@ $s_database_information = 'MantisBT数据库信息';
 $s_path_information = 'MantisBT路径信息';
 $s_mantisbt_database_statistics = 'MantisBT数据库统计';
 $s_php_version = 'PHP 版本';
+$s_os_information = '操作系统信息';
 $s_adodb_version = 'ADOdb 版本';
 $s_database_driver = '数据库驱动';
 $s_database_version_description = '数据库版本，描述';
@@ -1275,7 +1279,7 @@ $s_timeline_no_activity = '指定的时间段内没有活动。';
 $s_timeline_title = '时间轴';
 $s_timeline_more = '更多事件…';
 $s_missing_error_string = '缺少错误字符串：%1$s';
-$MANTIS_ERROR[ERROR_GENERIC] = '执行该操作时发生错误，您可能需要将此问题报告给您的系统管理员。';
+$MANTIS_ERROR[ERROR_GENERIC] = '执行此操作时发生错误。请报告给您的本地管理员。';
 $MANTIS_ERROR[ERROR_SQL] = '发生SQL错误；';
 $MANTIS_ERROR[ERROR_REPORT] = '在您的报告中发现错误。';
 $MANTIS_ERROR[ERROR_NO_FILE_SPECIFIED] = '没有指定文件';
@@ -1353,7 +1357,7 @@ $MANTIS_ERROR[ERROR_CATEGORY_DUPLICATE] = '已存在同名类别。';
 $MANTIS_ERROR[ERROR_NO_COPY_ACTION] = '没有指定的复制操作。';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND] = '没有找到类别。';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT] = '未在项目 "%2$s"中找到"%1$s"类别';
-$MANTIS_ERROR[ERROR_CATEGORY_CANNOT_DELETE_DEFAULT] = '这个分类不可以被删除，因为它被定为“为移动默认的分类“';
+$MANTIS_ERROR[ERROR_CATEGORY_CANNOT_UPDATE_DEFAULT] = '操作无法完成，因为分类“%1$s”在至少一个项目或全域中被定义为移动的默认设置。';
 $MANTIS_ERROR[ERROR_CATEGORY_CANNOT_DELETE_HAS_ISSUES] = '分类“%1$s”不能删除，因为它与一个或多个问题相关联。';
 $MANTIS_ERROR[ERROR_VERSION_DUPLICATE] = '已存在同名版本。';
 $MANTIS_ERROR[ERROR_VERSION_NOT_FOUND] = '没有找到版本“%1$s” 。';

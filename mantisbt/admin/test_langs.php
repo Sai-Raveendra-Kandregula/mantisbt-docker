@@ -25,7 +25,7 @@
 define( 'PLUGINS_DISABLED', true );
 define( 'LANG_LOAD_DISABLED', true );
 
-$t_mantis_dir = dirname( __FILE__, 2 ) . '/';
+$t_mantis_dir = dirname( __DIR__ ) . '/';
 
 require_once( $t_mantis_dir . 'core.php' );
 
@@ -635,7 +635,7 @@ function get_plugins( $p_path ) {
 	$t_iter = new CallbackFilterIterator(
 		new FileSystemIterator(
 			$p_path,
-			FileSystemIterator::KEY_AS_FILENAME
+			FileSystemIterator::SKIP_DOTS | FileSystemIterator::KEY_AS_FILENAME
 		),
 		/**
 		 * Callback filter function

@@ -84,6 +84,8 @@ require_api( 'utility_api.php' );
 require_api( 'version_api.php' );
 require_api( 'filter_form_api.php' );
 
+use Mantis\Exceptions\ClientException;
+
 /**
  * Filter array for the filter in use through view_all_bug_page.
  *
@@ -759,13 +761,24 @@ function filter_ensure_valid_filter( array $p_filter_arr ) {
 						$p_filter_arr['custom_fields'][$t_cfid],
 					);
 				}
+
 				$t_checked_array = array();
-				foreach( $p_filter_arr['custom_fields'][$t_cfid] as $t_filter_value ) {
-					$t_filter_value = stripslashes( $t_filter_value );
-					if( ( $t_filter_value === 'any' ) || ( $t_filter_value === '[any]' ) ) {
-						$t_filter_value = META_FILTER_ANY;
+
+				# Special handling for date custom fields which have a special array format
+				$t_def = custom_field_get_definition( $t_cfid );
+				if( $t_def['type'] == CUSTOM_FIELD_TYPE_DATE ) {
+					# All array elements should be numeric
+					# - 0 is one of the CUSTOM_FIELD_DATE_xxx constants
+					# - 1 & 2 are unix timestamps
+					$t_checked_array = array_map( 'intval', $p_filter_arr['custom_fields'][$t_cfid] );
+				} else {
+					foreach( $p_filter_arr['custom_fields'][$t_cfid] as $t_filter_value ) {
+						$t_filter_value = stripslashes( $t_filter_value );
+						if( ( $t_filter_value === 'any' ) || ( $t_filter_value === '[any]' ) ) {
+							$t_filter_value = META_FILTER_ANY;
+						}
+						$t_checked_array[] = $t_filter_value;
 					}
-					$t_checked_array[] = $t_filter_value;
 				}
 				$p_filter_arr['custom_fields'][$t_cfid] = $t_checked_array;
 			}
@@ -1338,7 +1351,7 @@ function filter_draw_selection_area() {
 					<form method="post" action="view_all_set.php">
 						<input type="hidden" name="type" value="<?php echo FILTER_ACTION_LOAD ?>" />
 						<select id="filter-bar-query-id" class="input-xs">
-							<option value="-1"></option>
+							<option value="-1">&nbsp;</option>
 							<?php
 							$t_source_query_id = isset( $t_filter['_source_query_id'] ) ? (int)$t_filter['_source_query_id'] : -1;
 							foreach( $t_stored_queries_arr as $t_query_id => $t_query_name ) {
@@ -1415,7 +1428,7 @@ function filter_draw_selection_area() {
 							<input type="hidden" name="type" value="<?php echo FILTER_ACTION_LOAD ?>" />
 							<label><?php echo lang_get( 'load' ) ?>
 								<select class="input-s" name="source_query_id">
-									<option value="-1"></option>
+									<option value="-1">&nbsp;</option>
 									<?php
 									$t_source_query_id = isset( $t_filter['_source_query_id'] ) ? (int)$t_filter['_source_query_id'] : -1;
 									foreach( $t_stored_queries_arr as $t_query_id => $t_query_name ) {
@@ -1639,7 +1652,7 @@ function filter_db_get_filter_string( $p_filter_id, $p_user_id = null ) {
  * get current filter for given project and user
  * @param integer $p_project_id A project identifier.
  * @param integer $p_user_id    A valid user identifier.
- * @return integer
+ * @return integer|null
  */
 function filter_db_get_project_current( $p_project_id = null, $p_user_id = null ) {
 	if( null === $p_project_id ) {
@@ -2150,7 +2163,7 @@ function filter_gpc_get( array $p_filter = null ) {
 				$f_custom_fields_data[$t_cfid] = array();
 
 				# Get date control property
-				$t_control = gpc_get_string( 'custom_field_' . $t_cfid . '_control', null );
+				$t_control = gpc_get_int( 'custom_field_' . $t_cfid . '_control', null );
 				$f_custom_fields_data[$t_cfid][0] = $t_control;
 
 				$t_one_day = 86399;
@@ -2324,8 +2337,13 @@ function filter_gpc_get( array $p_filter = null ) {
 function filter_get_visible_sort_properties_array( array $p_filter, $p_columns_target = COLUMNS_TARGET_VIEW_PAGE ) {
 	# get visible columns
 	$t_visible_columns = helper_get_columns_to_view( $p_columns_target );
-	# filter out those that ar not sortable
+	# filter out those that are not sortable
 	$t_visible_columns = array_filter( $t_visible_columns, 'column_is_sortable' );
+
+	# Special handling for overdue column, which is equivalent to sorting by due_date
+	if( in_array( 'overdue', $t_visible_columns ) & !in_array( 'due_date', $t_visible_columns ) ) {
+		$t_visible_columns[] = 'due_date';
+	}
 
 	$t_sort_fields = explode( ',', $p_filter[FILTER_PROPERTY_SORT_FIELD_NAME] );
 	$t_dir_fields = explode( ',', $p_filter[FILTER_PROPERTY_SORT_DIRECTION] );
@@ -2410,7 +2428,7 @@ function filter_print_view_type_toggle( $p_url, $p_view_type ) {
 	}
 
 	echo '<li>';
-	printf( '<a href="%s">%s</i>&#160;&#160;%s</a>',
+	printf( '<a href="%s">%s&#160;&#160;%s</a>',
 		$t_url,
 		icon_get( $t_icon, 'ace-icon' ),
 		lang_get( $t_lang_string )
@@ -2520,17 +2538,20 @@ function filter_get_included_projects( array $p_filter, $p_project_id = null, $p
 }
 
 /**
- * Returns a filter array structure for the given filter_id
+ * Returns a filter array structure for the given filter_id.
+ *
  * A default value can be provided to be used when the filter_id doesn't exists
- * or is not accessible
+ * or is not accessible.
  *
- *  You may pass in any array as a default (including null) but if
- *  you pass in *no* default then an error will be triggered if the filter
- *  cannot be found
+ * You may pass in any array as a default (including null) but if
+ * you pass in *no* default then an error will be triggered if the filter
+ * cannot be found.
  *
- * @param integer $p_filter_id Filter id
- * @param array $p_default     A filter array to return when id is not found
- * @return array	A filter array
+ * @param integer $p_filter_id Filter id.
+ * @param array   $p_default   A filter array to return when id is not found.
+ *
+ * @return array A filter array
+ * @throws ClientException
  */
 function filter_get( $p_filter_id, array $p_default = null ) {
 	# if no default was provided, we will trigger an error if not found
@@ -2541,14 +2562,17 @@ function filter_get( $p_filter_id, array $p_default = null ) {
 	# If value is false, it either doesn't exists or is not accessible
 	if( !$t_filter_string ) {
 		if( $t_trigger_error ) {
-			error_parameters( $p_filter_id );
-			trigger_error( ERROR_FILTER_NOT_FOUND, ERROR );
+			throw new ClientException(
+				"Filter id '$p_filter_id' not found",
+				ERROR_FILTER_NOT_FOUND,
+				[$p_filter_id]
+			);
 		} else {
 			return $p_default;
 		}
 	}
 	$t_filter = filter_deserialize( $t_filter_string );
-	# If the unserialez data is not an array, the some error happened, eg, invalid format
+	# If the unserialized data is not an array, then some error happened, eg, invalid format
 	if( !is_array( $t_filter ) ) {
 		# Don't throw error, otherwise the user could not recover navigation easily
 		return filter_get_default();
