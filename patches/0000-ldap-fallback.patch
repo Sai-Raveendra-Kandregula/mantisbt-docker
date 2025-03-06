@@ -1,7 +1,7 @@
-diff --git a/mantisbt-2.26.2/core/authentication_api.php b/mantisbt-2.26.2/core/authentication_api.php
+diff --git a/mantisbt/core/authentication_api.php b/mantisbt/core/authentication_api.php
 index d7e5c7d..484669b 100644
---- a/mantisbt-2.26.2/core/authentication_api.php
-+++ b/mantisbt-2.26.2/core/authentication_api.php
+--- a/mantisbt/core/authentication_api.php
++++ b/mantisbt/core/authentication_api.php
 @@ -760,9 +760,9 @@ function auth_get_password_max_size() {
  function auth_does_password_match( $p_user_id, $p_test_password ) {
  	$t_configured_login_method = config_get_global( 'login_method' );
